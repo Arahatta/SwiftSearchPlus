@@ -1,0 +1,50 @@
+name: Build Windows EXE
+
+"on":
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows-x64:
+    name: Build Windows x64
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.x'
+          cache: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Build executable
+        shell: cmd
+        run: call build.cmd
+
+      - name: Verify output
+        shell: pwsh
+        run: |
+          $exe = Join-Path $PWD 'build/SwiftSearchPlus.exe'
+          if (!(Test-Path $exe)) { throw "Build output was not created: $exe" }
+          $item = Get-Item $exe
+          if ($item.Length -lt 100000) { throw "Build output is unexpectedly small: $($item.Length) bytes" }
+          Write-Host "Verified $($item.FullName) ($($item.Length) bytes)"
+
+      - name: Upload executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: SwiftSearchPlus-windows-x64
+          path: build/SwiftSearchPlus.exe
+          if-no-files-found: error
+          retention-days: 14
