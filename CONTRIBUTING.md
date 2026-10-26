@@ -1,6 +1,6 @@
 # Contributing
-<img width="306" height="616" alt="zfb" src="https://github.com/user-attachments/assets/c09bed47-c96e-44d9-9ca2-f8a7b2836a61" />
-<img width="442" height="540" alt="wx" src="https://github.com/user-attachments/assets/24dd6676-d3f1-4b66-85f8-f01ce51d0bbd" />
+<img width="440" height="500" alt="zfb" src="https://github.com/user-attachments/assets/c09bed47-c96e-44d9-9ca2-f8a7b2836a61" />
+<img width="440" height="500" alt="wx" src="https://github.com/user-attachments/assets/24dd6676-d3f1-4b66-85f8-f01ce51d0bbd" />
 
 Thanks for considering a contribution.
 
