@@ -38,6 +38,16 @@ SwiftSearch Plus is an unofficial, independent implementation inspired by the ne
 4. 在 Windows 上双击 `build.cmd`。
 5. 成品生成于 `build/SwiftSearchPlus.exe`。
 
+### GitHub 自动编译
+
+仓库中的 `.github/workflows/windows-build.yml` 会在向仓库推送提交、创建/更新 Pull Request 时自动运行，也可以手动触发。成功后会生成 `SwiftSearchPlus-windows-x64` 下载产物。
+
+1. 确认 GitHub 仓库里存在完整路径 `.github/workflows/windows-build.yml`（注意 `.github` 是以点开头的目录）。
+2. 将文件提交到仓库后，打开仓库顶部的 **Actions** 标签页。
+3. 选择 **Build Windows EXE**，打开最近一次运行。
+4. 成功后，在运行页面底部的 **Artifacts** 区域下载 `SwiftSearchPlus-windows-x64`。
+5. 如果没有任何工作流，通常是 `.github/workflows/windows-build.yml` 没有上传，或 GitHub Actions 被仓库设置禁用。若工作流有运行但失败，点击具体步骤查看日志。
+
 也可以在仓库目录中运行普通的 Go 编译命令（这样不会嵌入自定义图标和应用 manifest）：
 
 ```bat
@@ -57,13 +67,13 @@ go build -trimpath -ldflags="-H=windowsgui -s -w" -o build\SwiftSearchPlus-unico
 ### 当前限制
 
 - 目前仅面向 Windows x64 和 NTFS 卷。
-- 首次构建索引可能需要一段时间；大型卷的结果数量、磁盘速度和文件系统状态可能会影响响应时间。
+- 首次构建索引可能需要一段时间；大型卷的结果数量、磁盘速度和文件系统状态会影响响应时间。
 - 该版本尚未在多种 Windows 版本、不同 DPI 比例和大型真实磁盘上完成全面验证。窗口缩放、搜索取消、权限提升、索引缓存及 USN 增量更新仍需实际测试。
 - 请勿把当前实验版视为已经稳定的正式发行版本。
 
 ### 项目来源与名称说明
 
-本仓库包含的是独立编写的 Go/Win32 实现，不包含原版 SwiftSearch 的 C++ 源码，也不包含从原版可执行文件提取的文件。原版项目可在 [SourceForge 上的 SwiftSearch 项目页](https://sourceforge.net/projects/swiftsearch/) 查看。此链接仅用于说明相关项目背景；本项目非官方，也未获原作者背书。
+本仓库包含的是独立编写的 Go/Win32 实现，不包含原版 SwiftSearch 的 C++ 源码，也不包含从原版可执行文件提取的图标。原版项目可在 [SourceForge 上的 SwiftSearch 项目页](https://sourceforge.net/projects/swiftsearch/) 查看。此链接仅用于说明相关项目背景；本项目非官方，也未获原作者背书。
 
 本仓库中的代码和自行制作的图标依照根目录 `LICENSE` 中的 MIT License 发布。该许可证不适用于任何未包含在本仓库中的第三方项目或资产。
 
@@ -83,6 +93,8 @@ go build -trimpath -ldflags="-H=windowsgui -s -w" -o build\SwiftSearchPlus-unico
 ### Build
 
 Requirements: Windows 10/11 x64, Go 1.23+, and Python 3 with the `py` launcher. Run `build.cmd`; the executable is written to `build/SwiftSearchPlus.exe`.
+
+GitHub Actions builds the EXE on each push and pull request. Confirm `.github/workflows/windows-build.yml` exists in the repository; download the successful `SwiftSearchPlus-windows-x64` artifact from the workflow run's **Artifacts** section. You can also manually start **Build Windows EXE** from the **Actions** tab.
 
 ### Project status
 

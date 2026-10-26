@@ -1,26 +1,31 @@
 @echo off
-setlocal
-cd /d "%~dp0"
+setlocal EnableExtensions
+cd /d "%~dp0" || exit /b 1
+
+rem GitHub Actions sets CI=true/GITHUB_ACTIONS=true. Never pause in automation.
+set "IS_CI=0"
+if /I "%CI%"=="true" set "IS_CI=1"
+if /I "%GITHUB_ACTIONS%"=="true" set "IS_CI=1"
 
 where go >nul 2>nul
 if errorlevel 1 (
-  echo Go 1.23 or newer was not found.
+  echo ERROR: Go 1.23 or newer was not found.
   echo Install it from https://go.dev/dl/ and retry.
-  pause
+  if "%IS_CI%"=="0" pause
   exit /b 1
 )
 where py >nul 2>nul
 if errorlevel 1 (
-  echo Python 3 launcher was not found.
+  echo ERROR: Python 3 launcher was not found.
   echo Install Python 3 from https://www.python.org/downloads/ and enable the py launcher.
-  pause
+  if "%IS_CI%"=="0" pause
   exit /b 1
 )
 
 if not exist build mkdir build
-set GOOS=windows
-set GOARCH=amd64
-set CGO_ENABLED=0
+set "GOOS=windows"
+set "GOARCH=amd64"
+set "CGO_ENABLED=0"
 
 echo [1/2] Building SwiftSearch Plus for Windows x64...
 go build -trimpath -ldflags="-H=windowsgui -s -w" -o "build\SwiftSearchPlus-unicon.exe" .
@@ -31,15 +36,20 @@ py -3 "tools\embed_resources.py" --exe "build\SwiftSearchPlus-unicon.exe" --icon
 if errorlevel 1 goto :fail
 
 del "build\SwiftSearchPlus-unicon.exe" >nul 2>nul
+if not exist "build\SwiftSearchPlus.exe" goto :fail
+for %%F in ("build\SwiftSearchPlus.exe") do if %%~zF LSS 100000 goto :fail
+
 echo.
-echo Build completed: "%~dp0build\SwiftSearchPlus.exe"
+echo BUILD SUCCESS: "%~dp0build\SwiftSearchPlus.exe"
 echo NOTE: This is an experimental build; test it on Windows before relying on it.
+if "%IS_CI%"=="1" goto :done
 start "" "%~dp0build"
 pause
+:done
 exit /b 0
 
 :fail
 echo.
-echo Build failed. Review the error shown above.
-pause
+echo BUILD FAILED. Review the error shown above.
+if "%IS_CI%"=="0" pause
 exit /b 1
